@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: furia-api
+    env: docker
+    region: oregon
+    plan: free
+    dockerfilePath: Dockerfile
+    buildCommand: ""
+    startCommand: ""
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        value: base64:TF5Ea1ElXO3crTD+y5OIF/5dzJXqaJbZstpNrCRHMMU=
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: furia-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: furia-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: furia-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: furia-db
+          property: username
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: furia-db
+          property: password
+  
+  - type: postgres
+    name: furia-db
+    plan: free
+    region: oregon
+    ipAllowList: []
