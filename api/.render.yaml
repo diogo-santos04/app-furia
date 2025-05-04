@@ -13,7 +13,7 @@ services:
       - key: APP_ENV
         value: production
       - key: APP_KEY
-        value: base64:TF5Ea1ElXO3crTD+y5OIF/5dzJXqaJbZstpNrCRHMMU=
+        value: base64:mn6SL7W4g+05bhccWSPWTZ3Z5d6Tg2g5FMS++JCo1sM=
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
