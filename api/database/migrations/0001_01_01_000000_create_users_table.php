@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('cpf')->unique();
+            $table->string('cpf');
             $table->string('pais')->nullable();
             $table->string('estado')->nullable();
             $table->json('interesses')->nullable(); 
