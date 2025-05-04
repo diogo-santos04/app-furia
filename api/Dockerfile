@@ -1,7 +1,12 @@
 FROM php:8.3-fpm
 
+# Configuração para evitar interação durante instalação de pacotes
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Instala dependências do sistema e pacotes PHP
-RUN apt-get update && apt-get install -y \
+RUN apt-get update --fix-missing && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
     git \
     curl \
     libpng-dev \
@@ -11,11 +16,16 @@ RUN apt-get update && apt-get install -y \
     unzip \
     gnupg \
     ca-certificates \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd
 
 # Instala Node.js LTS (via NodeSource)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs
+    apt-get update && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Instala Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -23,16 +33,23 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Define diretório de trabalho
 WORKDIR /var/www/html
 
+# Copia arquivos de configuração do projeto
+COPY composer.json composer.lock package.json package-lock.json ./
+
+# Instala dependências PHP do Laravel
+RUN composer install --no-scripts --no-autoloader --no-interaction
+
 # Copia todos os arquivos do projeto
-COPY . /var/www/html/
+COPY . .
+
+# Finaliza a instalação do Composer com autoload otimizado
+RUN composer dump-autoload --optimize && \
+    composer run-script post-autoload-dump
 
 # Permissões corretas para storage e cache
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
-
-# Instala dependências PHP do Laravel
-RUN composer install --no-interaction --no-dev --optimize-autoloader
+    && chmod -R 775 storage \
+    && chmod -R 775 bootstrap/cache
 
 # Expõe porta do Laravel
 EXPOSE 8000
