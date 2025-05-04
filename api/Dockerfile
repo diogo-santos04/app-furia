@@ -1,22 +1,62 @@
-FROM bitnami/laravel:10
+FROM php:8.1-fpm
 
-USER root
+# Definir variáveis de ambiente para instalação não interativa
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_MEMORY_LIMIT=-1
 
-# Copiar os arquivos do projeto
-COPY . /app
+# Instalação mínima de dependências
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update && \
+    apt-get install -y \
+    git \
+    curl \
+    zip \
+    unzip \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libpq-dev \
+    postgresql-client \
+    --no-install-recommends && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Certificar que as permissões estão corretas
-RUN chown -R bitnami:bitnami /app && \
-    chmod -R 775 /app/storage /app/bootstrap/cache
+# Instalar extensões PHP
+RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath && \
+    docker-php-ext-configure gd && \
+    docker-php-ext-install gd
 
-# Mudar para o usuário padrão não-root
-USER bitnami
+# Instalar Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Limpar os caches
-RUN php artisan optimize:clear
+# Configurar diretório de trabalho
+WORKDIR /var/www/html
 
-# Exponha a porta 8000 para o tráfego web
+# Copiar apenas os arquivos de configuração primeiro
+COPY composer.json composer.lock ./
+
+# Instalar dependências do PHP sem scripts
+RUN composer install --no-scripts --no-autoloader --no-interaction --no-dev
+
+# Copiar o resto dos arquivos do projeto
+COPY . .
+
+# Finalizar a instalação do Composer
+RUN composer dump-autoload --optimize --no-dev
+
+# Permissões para o Laravel
+RUN chmod -R 775 storage bootstrap/cache && \
+    chown -R www-data:www-data /var/www/html
+
+# Preparar o entrypoint
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Expor porta
 EXPOSE 8000
 
-# Comando para iniciar o servidor Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Comando de inicialização
+CMD ["/usr/local/bin/docker-entrypoint.sh"]
