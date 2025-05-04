@@ -3,11 +3,14 @@
     "name": "furia",
     "slug": "furia",
     "version": "1.0.0",
+    "owner": "diogosantos04",
     "orientation": "portrait",
     "icon": "./assets/logo-furia-1.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "assets": ["./assets"],
+    "assets": [
+      "./assets"
+    ],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -24,6 +27,17 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d5d3186f-1cbd-4c9a-9dae-66cbb52d67c0"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/d5d3186f-1cbd-4c9a-9dae-66cbb52d67c0"
     }
   }
 }

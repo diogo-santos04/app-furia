@@ -1212,7 +1212,7 @@
     wrap-ansi "^7.0.0"
     ws "^8.12.1"
 
-"@expo/code-signing-certificates@^0.0.5":
+"@expo/code-signing-certificates@^0.0.5", "@expo/code-signing-certificates@0.0.5":
   version "0.0.5"
   resolved "https://registry.npmjs.org/@expo/code-signing-certificates/-/code-signing-certificates-0.0.5.tgz"
   integrity sha512-BNhXkY1bblxKZpltzAx98G2Egj9g1Q+JRcvR7E99DOj862FTCX+ZPsAUtPTr7aHxwtrL7+fL3r0JSmM9kBm+Bw==
@@ -2091,6 +2091,11 @@ arg@^5.0.2:
   version "5.0.2"
   resolved "https://registry.npmjs.org/arg/-/arg-5.0.2.tgz"
   integrity sha512-PYjyFOLKQ9y57JvQ6QLo8dAgNqswh8M1RMJYdQduT6xbWSgK36P/Z/v+p888pM69jMMfS8Xd8F6I1kQ/I9HUGg==
+
+arg@4.1.0:
+  version "4.1.0"
+  resolved "https://registry.npmjs.org/arg/-/arg-4.1.0.tgz"
+  integrity sha512-ZWc51jO3qegGkVh8Hwpv636EkbesNV5ZNQPCtRa+0qytRYPEs9IYT9qITY9buezqUH5uqyzlWLcufrzU2rffdg==
 
 argparse@^1.0.7:
   version "1.0.10"
@@ -3070,6 +3075,11 @@ expo-constants@~17.0.8:
     "@expo/config" "~10.0.11"
     "@expo/env" "~0.4.2"
 
+expo-eas-client@~0.13.3:
+  version "0.13.3"
+  resolved "https://registry.npmjs.org/expo-eas-client/-/expo-eas-client-0.13.3.tgz"
+  integrity sha512-t+1F1tiDocSot8iSnrn/CjTUMvVvPV2DpafSVcticpbSzMGybEN7wcamO1t18fK7WxGXpZE9gxtd80qwv/LLqQ==
+
 expo-file-system@~18.0.12:
   version "18.0.12"
   resolved "https://registry.npmjs.org/expo-file-system/-/expo-file-system-18.0.12.tgz"
@@ -3084,10 +3094,23 @@ expo-font@*, expo-font@~13.0.4:
   dependencies:
     fontfaceobserver "^2.1.0"
 
+expo-json-utils@~0.14.0:
+  version "0.14.0"
+  resolved "https://registry.npmjs.org/expo-json-utils/-/expo-json-utils-0.14.0.tgz"
+  integrity sha512-xjGfK9dL0B1wLnOqNkX0jM9p48Y0I5xEPzHude28LY67UmamUyAACkqhZGaPClyPNfdzczk7Ej6WaRMT3HfXvw==
+
 expo-keep-awake@~14.0.3:
   version "14.0.3"
   resolved "https://registry.npmjs.org/expo-keep-awake/-/expo-keep-awake-14.0.3.tgz"
   integrity sha512-6Jh94G6NvTZfuLnm2vwIpKe3GdOiVBuISl7FI8GqN0/9UOg9E0WXXp5cDcfAG8bn80RfgLJS8P7EPUGTZyOvhg==
+
+expo-manifests@~0.15.7:
+  version "0.15.8"
+  resolved "https://registry.npmjs.org/expo-manifests/-/expo-manifests-0.15.8.tgz"
+  integrity sha512-VuIyaMfRfLZeETNsRohqhy1l7iZ7I+HKMPfZXVL2Yn17TT0WkOhZoq1DzYwPbOHPgp1Uk6phNa86EyaHrD2DLw==
+  dependencies:
+    "@expo/config" "~10.0.11"
+    expo-json-utils "~0.14.0"
 
 expo-modules-autolinking@2.0.8:
   version "2.0.8"
@@ -3114,6 +3137,36 @@ expo-status-bar@~2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/expo-status-bar/-/expo-status-bar-2.0.1.tgz"
   integrity sha512-AkIPX7jWHRPp83UBZ1iXtVvyr0g+DgBVvIXTtlmPtmUsm8Vq9Bb5IGj86PW8osuFlgoTVAg7HI/+Ok7yEYwiRg==
+
+expo-structured-headers@~4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/expo-structured-headers/-/expo-structured-headers-4.0.0.tgz"
+  integrity sha512-uPiwZjWq3AdFGgY52+I2nGPrNa6izxAglymPXHUZLekZW290GqIUOk7MBNDD4sg4JwUbSi3gdxEurpEvuq+FSg==
+
+expo-updates-interface@~1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/expo-updates-interface/-/expo-updates-interface-1.0.0.tgz"
+  integrity sha512-93oWtvULJOj+Pp+N/lpTcFfuREX1wNeHtp7Lwn8EbzYYmdn37MvZU3TPW2tYYCZuhzmKEXnUblYcruYoDu7IrQ==
+
+expo-updates@^0.27.4:
+  version "0.27.4"
+  resolved "https://registry.npmjs.org/expo-updates/-/expo-updates-0.27.4.tgz"
+  integrity sha512-0rg4L2fFPEjTR/qnZ9Te4Q4irVC8uvNcTZW1pWnWbadG1SLv2PKjS1MYX5BboKzC3ao0H7m++5TP3hWhNg9org==
+  dependencies:
+    "@expo/code-signing-certificates" "0.0.5"
+    "@expo/config" "~10.0.11"
+    "@expo/config-plugins" "~9.0.17"
+    "@expo/spawn-async" "^1.7.2"
+    arg "4.1.0"
+    chalk "^4.1.2"
+    expo-eas-client "~0.13.3"
+    expo-manifests "~0.15.7"
+    expo-structured-headers "~4.0.0"
+    expo-updates-interface "~1.0.0"
+    fast-glob "^3.3.2"
+    fbemitter "^3.0.0"
+    ignore "^5.3.1"
+    resolve-from "^5.0.0"
 
 expo@*, expo@~52.0.43:
   version "52.0.44"
@@ -3606,7 +3659,7 @@ ieee754@^1.1.13:
   resolved "https://registry.npmjs.org/ieee754/-/ieee754-1.2.1.tgz"
   integrity sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==
 
-ignore@^5.2.0:
+ignore@^5.2.0, ignore@^5.3.1:
   version "5.3.2"
   resolved "https://registry.npmjs.org/ignore/-/ignore-5.3.2.tgz"
   integrity sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==
