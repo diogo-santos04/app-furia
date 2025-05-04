@@ -1,8 +1,7 @@
 .git
 .env
-.env.example
-.env.backup
 node_modules
+# NÃO ignore o diretório vendor
+# vendor
 docker-compose.yml
 .dockerignore
-Dockerfile

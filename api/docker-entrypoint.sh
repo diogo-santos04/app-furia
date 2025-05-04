@@ -1,17 +1,27 @@
 #!/bin/sh
 set -e
 
-# Criar arquivo .env manualmente se não existir
+echo "Verificando ambiente..."
+
+# Verificar se vendor existe, se não, instalar dependências
+if [ ! -d "vendor" ]; then
+    echo "Diretório vendor não encontrado, instalando dependências..."
+    composer install --no-interaction --optimize-autoloader --no-dev
+else
+    echo "Diretório vendor encontrado!"
+fi
+
+# Criar arquivo .env se não existir
 if [ ! -f ".env" ]; then
-  echo "Criando arquivo .env manualmente..."
+  echo "Criando arquivo .env..."
   
-  # Criar um arquivo .env básico com configurações padrão
+  # Criar um arquivo .env básico
   cat > .env << EOF
 APP_NAME=Laravel
 APP_ENV=production
 APP_KEY=
 APP_DEBUG=false
-APP_URL=http://localhost
+APP_URL=${APP_URL:-http://localhost}
 
 LOG_CHANNEL=stderr
 LOG_DEPRECATIONS_CHANNEL=null
@@ -35,15 +45,33 @@ EOF
   echo ".env criado com sucesso!"
 fi
 
-# Gerar chave do aplicativo se não existir
+# Verificar se autoload.php existe
+if [ ! -f "vendor/autoload.php" ]; then
+    echo "ERRO: vendor/autoload.php não encontrado!"
+    echo "Tentando instalar dependências novamente..."
+    composer install --no-interaction --optimize-autoloader --no-dev
+    
+    if [ ! -f "vendor/autoload.php" ]; then
+        echo "ERRO CRÍTICO: Falha ao instalar dependências do Composer!"
+        exit 1
+    fi
+fi
+
+# Gerar chave do aplicativo
+echo "Gerando chave da aplicação..."
 php artisan key:generate --force
 
-# Executar migrações (apenas se a conexão com o banco for bem-sucedida)
-php artisan migrate --force || echo "Migração falhou, mas continuando..."
+# Verificar conexão com o banco de dados
+echo "Verificando conexão com o banco de dados..."
+php artisan db:monitor || echo "Aviso: Não foi possível verificar a conexão com o banco de dados. Continuando..."
 
-# Limpar cache
-php artisan optimize:clear
+# Executar migrações
+echo "Executando migrações..."
+php artisan migrate --force || echo "Aviso: Migrações falharam, mas continuando..."
 
-# Iniciar o servidor
+# Otimizar aplicação
+echo "Otimizando aplicação..."
+php artisan optimize || echo "Aviso: Otimização falhou, mas continuando..."
+
 echo "Iniciando servidor na porta ${PORT:-8000}..."
 php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
