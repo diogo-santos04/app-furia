@@ -1,7 +1,0 @@
-.git
-.env
-node_modules
-# NÃO ignore o diretório vendor
-# vendor
-docker-compose.yml
-.dockerignore

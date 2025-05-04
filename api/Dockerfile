@@ -1,49 +1,35 @@
-FROM php:8.1-fpm
+FROM php:8.3-fpm
 
-# Variáveis de ambiente
-ENV COMPOSER_ALLOW_SUPERUSER=1
-ENV COMPOSER_MEMORY_LIMIT=-1
-
-# Instalação de dependências
 RUN apt-get update && apt-get install -y \
     git \
     curl \
-    zip \
-    unzip \
-    libpq-dev \
+    libpng-dev \
     libonig-dev \
     libxml2-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath
+    zip \
+    unzip \
+    nodejs \
+    npm \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
-# Instalar Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Configurar diretório de trabalho
 WORKDIR /var/www/html
 
-# Copiar arquivos do projeto
-COPY . .
+COPY . /var/www/html/
 
-# Verificar se vendor existe, se não, instalar dependências
-RUN if [ ! -d "/var/www/html/vendor" ]; then \
-        echo "Instalando dependências com Composer..." && \
-        composer install --no-interaction --optimize-autoloader --no-dev; \
-    else \
-        echo "Diretório vendor encontrado, pulando instalação do Composer"; \
-    fi
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage
 
-# Ajustar permissões
-RUN chmod -R 775 storage bootstrap/cache \
-    && chown -R www-data:www-data .
+RUN composer install --no-interaction --no-dev --optimize-autoloader
 
-# Script de entrada
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
+
+EXPOSE 8000
+
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Expor porta
-EXPOSE 8000
-
-# Comando de inicialização
-CMD ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["docker-entrypoint.sh"]

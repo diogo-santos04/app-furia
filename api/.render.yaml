@@ -48,5 +48,3 @@ services:
     plan: free
     region: oregon
     ipAllowList: []
-
-startCommand: /usr/local/bin/docker-entrypoint.sh
