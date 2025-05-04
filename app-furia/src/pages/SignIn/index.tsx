@@ -19,7 +19,7 @@ export default function SignIn() {
         }
     
         try {
-            await signIn({ email, password });
+            navigation.navigate("Menu");
         } catch (error) {
             console.log(error);
         }
