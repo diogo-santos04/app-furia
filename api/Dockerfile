@@ -1,5 +1,5 @@
 FROM php:8.1-fpm
-##..
+
 # Definir variáveis de ambiente para instalação não interativa
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
@@ -16,12 +16,16 @@ RUN apt-get clean && \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    # PostgreSQL dependencies
+    libpq-dev \
+    postgresql-client \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
 # Instalar extensões PHP
-RUN docker-php-ext-configure gd && \
-    docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath && \
+    docker-php-ext-configure gd && \
+    docker-php-ext-install gd
 
 # Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
