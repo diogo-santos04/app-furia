@@ -1,15 +1,17 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
-if [ "$APP_ENV" = "production" ]; then
-  echo "Executando migrações..."
-  php artisan migrate --force
+# Configurar o arquivo .env se estiver faltando
+if [ ! -f ".env" ]; then
+  echo "Criando arquivo .env..."
+  cp .env.example .env
 fi
 
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+# Executar migrações
+php artisan migrate --force
 
-php artisan serve --host=0.0.0.0 --port=8000
+# Limpar cache
+php artisan optimize:clear
 
-exec "$@"
+# Iniciar o servidor
+php artisan serve --host=0.0.0.0 --port=${PORT:-8000}

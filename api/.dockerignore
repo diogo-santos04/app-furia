@@ -1,0 +1,8 @@
+.git
+.env
+.env.example
+.env.backup
+node_modules
+docker-compose.yml
+.dockerignore
+Dockerfile
