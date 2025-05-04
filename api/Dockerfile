@@ -1,61 +1,56 @@
-FROM php:8.3-fpm
-
-# Configuração para evitar interação durante instalação de pacotes
+FROM php:8.1-fpm
+##..
+# Definir variáveis de ambiente para instalação não interativa
 ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
 
-# Instala dependências do sistema e pacotes PHP
-RUN apt-get update --fix-missing && \
-    apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends \
+# Instalação mínima de dependências
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update && \
+    apt-get install -y \
     git \
     curl \
+    zip \
+    unzip \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    zip \
-    unzip \
-    gnupg \
-    ca-certificates \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd
-
-# Instala Node.js LTS (via NodeSource)
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get update && \
-    apt-get install -y nodejs && \
-    apt-get clean && \
+    --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
-# Instala Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Instalar extensões PHP
+RUN docker-php-ext-configure gd && \
+    docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
 
-# Define diretório de trabalho
+# Instalar Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Instalar Node.js 16.x
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get update && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Configurar diretório de trabalho
 WORKDIR /var/www/html
 
-# Copia arquivos de configuração do projeto
-COPY composer.json composer.lock package.json package-lock.json ./
+# Copiar arquivos do projeto
+COPY . /var/www/html/
 
-# Instala dependências PHP do Laravel
-RUN composer install --no-scripts --no-autoloader --no-interaction
+# Permissões para o Laravel
+RUN chmod -R 775 storage bootstrap/cache && \
+    chown -R www-data:www-data /var/www/html
 
-# Copia todos os arquivos do projeto
-COPY . .
+# Instalar dependências do PHP
+RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# Finaliza a instalação do Composer com autoload otimizado
-RUN composer dump-autoload --optimize && \
-    composer run-script post-autoload-dump
-
-# Permissões corretas para storage e cache
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 storage \
-    && chmod -R 775 bootstrap/cache
-
-# Expõe porta do Laravel
-EXPOSE 8000
-
-# Copia e habilita entrypoint
+# Preparar o entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-CMD ["docker-entrypoint.sh"]
+# Expor porta
+EXPOSE 8000
+
+# Comando de inicialização
+CMD ["/usr/local/bin/docker-entrypoint.sh"]
