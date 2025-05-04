@@ -19,7 +19,7 @@ export default function SignIn() {
         }
     
         try {
-            navigation.navigate("Menu");
+            await signIn({ email, password });
         } catch (error) {
             console.log(error);
         }
@@ -45,16 +45,7 @@ export default function SignIn() {
                 </View>
 
                 <View style={styles.middleContent}>
-                    {/* <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
-                        <AntDesign name="google" size={20} color="#333333" style={{ marginRight: 10 }} />
-                        <Text style={styles.googleButtonText}>Entrar com Google</Text>
-                    </TouchableOpacity>
 
-                    <View style={styles.dividerContainer}>
-                        <View style={styles.divider} />
-                        <Text style={styles.dividerText}>ou</Text>
-                        <View style={styles.divider} />
-                    </View> */}
                     <TextInput
                         style={styles.input}
                         placeholder="Email"
