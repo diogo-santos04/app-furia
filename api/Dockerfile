@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nodejs \
     npm \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -19,13 +19,10 @@ WORKDIR /var/www/html
 COPY . /var/www/html/
 
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
 RUN composer install --no-interaction --no-dev --optimize-autoloader
-
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
 
 EXPOSE 8000
 

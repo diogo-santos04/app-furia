@@ -8,6 +8,8 @@ services:
     buildCommand: ""
     startCommand: ""
     envVars:
+      - key: APP_URL
+        value: https://furia-api.onrender.com
       - key: APP_ENV
         value: production
       - key: APP_KEY
@@ -34,9 +36,17 @@ services:
         fromDatabase:
           name: furia-db
           property: password
-  
+      - key: TWITTER_BEARER_TOKEN
+        value: AAAAAAAAAAAAAAAAAAAAAEt%2B0wEAAAAAgK9GHgQqWXSZ1aTisxVXy9DXS0A%3DLzU6giTkEfHmn7LIKRYqJDVbfoXqkgVfnsePiBkDQX35EPUChW
+      - key: TWITCH_ACCESS_TOKEN
+        value: yviiw7dqrlrl9044ehnfzm3ak1x0di
+      - key: TWITCH_CLIENT_ID
+        value: 7b3xuvlzmrxhui1bcztth7tbves6gh
+
   - type: postgres
     name: furia-db
     plan: free
     region: oregon
     ipAllowList: []
+
+startCommand: /usr/local/bin/docker-entrypoint.sh
