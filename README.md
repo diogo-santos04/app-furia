@@ -1,7 +1,7 @@
 
 Aplicativo desenvolvido como parte do **Desafio FURIA**, voltado para o processo seletivo da vaga de **Assistente em Engenharia de Software**.
 
-O projeto tem como objetivo fortalecer a relação entre fãs e a organização de eSports **FURIA**, oferecendo um app completo com notícias, jogos, integração com redes sociais e funcionalidades personalizadas com base nos interesses dos usuários.
+O projeto tem como objetivo fortalecer a relação entre fãs e a organização de eSports **FURIA**, oferecendo um app completo com notícias, jogos e integração com redes sociais.
 
 ---
 
